@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>부산 1박2일 🌊 7/21–22 · 4인</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --sea-900:#053a5f; --sea-700:#075985; --sea-500:#0ea5e9; --sea-300:#7dd3fc; --sea-100:#e0f2fe; --sea-50:#f0f9ff;
+  --coral:#f43f5e; --coral-soft:#ffe4e6; --sun:#f97316; --sun-soft:#ffedd5; --sand:#fef3c7;
+  --violet:#8b5cf6; --ink:#0f2a3d; --sub:#5b7a8c; --line:#d5e9f5; --card:#ffffff;
+  --r:18px; --shadow:0 6px 24px rgba(7,89,133,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:74px}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;color:var(--ink);background:var(--sea-50);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 18px}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:1000;background:rgba(240,249,255,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:4px;overflow-x:auto;padding:10px 18px;scrollbar-width:none}
+nav .wrap::-webkit-scrollbar{display:none}
+nav .logo{font-weight:800;font-size:15px;color:var(--sea-700);white-space:nowrap;margin-right:8px}
+nav a{white-space:nowrap;font-size:13.5px;font-weight:600;color:var(--sub);text-decoration:none;padding:7px 13px;border-radius:99px;transition:.18s}
+nav a:hover,nav a.on{background:var(--sea-500);color:#fff}
+
+/* ---------- hero ---------- */
+header{position:relative;color:#fff;overflow:hidden;background:linear-gradient(175deg,#38bdf8 0%,#0ea5e9 34%,#0284c7 68%,#075985 100%)}
+header::before{content:"";position:absolute;inset:0;background:
+ radial-gradient(ellipse 60% 42% at 78% 8%,rgba(255,237,213,.55),transparent 60%),
+ radial-gradient(ellipse 42% 30% at 14% 90%,rgba(125,211,252,.35),transparent 65%)}
+.hero{position:relative;padding:62px 0 96px;text-align:center}
+.hero .sun{font-size:44px;display:block;margin-bottom:6px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.15));animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.hero h1{font-size:clamp(30px,6.4vw,46px);font-weight:900;letter-spacing:-.02em;text-shadow:0 2px 14px rgba(3,58,95,.3)}
+.hero h1 em{font-style:normal;color:var(--sand)}
+.hero p.tag{margin-top:10px;font-size:15.5px;font-weight:500;opacity:.94}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:22px}
+.chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px);padding:7px 15px;border-radius:99px;font-size:13.5px;font-weight:600}
+.chip b{color:var(--sand)}
+.waves{position:absolute;bottom:-1px;left:0;width:100%;line-height:0}
+.waves svg{width:100%;height:64px;display:block}
+
+/* ---------- sections ---------- */
+section{padding:52px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.sec-head .no{font-size:13px;font-weight:800;color:var(--sea-500);letter-spacing:.12em}
+.sec-head h2{font-size:clamp(21px,4vw,26px);font-weight:800;letter-spacing:-.01em}
+.sec-sub{color:var(--sub);font-size:14.5px;margin-bottom:22px}
+
+/* ---------- summary cards ---------- */
+.day-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.day-cards{grid-template-columns:1fr}}
+.dcard{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 20px 16px;border-top:5px solid var(--sea-500)}
+.dcard.d2{border-top-color:var(--sun)}
+.dcard .dt{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--sea-500)}
+.dcard.d2 .dt{color:var(--sun)}
+.dcard h3{font-size:18px;font-weight:800;margin:2px 0 10px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow span{background:var(--sea-100);color:var(--sea-700);font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:8px}
+.dcard.d2 .flow span{background:var(--sun-soft);color:#9a3412}
+.flow i{color:#a8c8da;font-style:normal;font-size:12px}
+.fixed-note{margin-top:16px;background:linear-gradient(135deg,var(--sea-100),#dbeafe);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;font-size:14px}
+.fixed-note b{color:var(--sea-700)}
+
+/* ---------- map ---------- */
+#map{height:440px;border-radius:var(--r);box-shadow:var(--shadow);z-index:1}
+.map-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.mbtn{border:1.5px solid var(--line);background:#fff;color:var(--sub);font-family:inherit;font-size:13.5px;font-weight:700;padding:7px 16px;border-radius:99px;cursor:pointer;transition:.15s}
+.mbtn.on{background:var(--sea-700);border-color:var(--sea-700);color:#fff}
+.map-note{font-size:12.5px;color:var(--sub);margin-top:10px}
+.leaflet-popup-content{font-family:inherit;font-size:13.5px;line-height:1.5;margin:12px 16px}
+.leaflet-popup-content b{font-size:14.5px}
+.pop-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--sea-100);color:var(--sea-700);margin-top:4px}
+.mk{transition:transform .15s ease}
+.leaflet-marker-icon:hover .mk{transform:rotate(-45deg) scale(1.28)!important}
+.spot-tip{background:#0f2a3d!important;color:#fff!important;border:none!important;border-radius:10px!important;box-shadow:0 6px 18px rgba(0,0,0,.25)!important;font-family:inherit!important;font-size:12.5px!important;padding:8px 12px!important;line-height:1.45}
+.spot-tip::before{border-top-color:#0f2a3d!important}
+.spot-tip b{color:#7dd3fc}
+
+/* ---------- interactions ---------- */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+.ti .card,.pcard,.dcard,.note{transition:transform .2s ease,box-shadow .2s ease}
+.ti .card:hover,.dcard:hover,.note:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(7,89,133,.16)}
+.pcard.linked{cursor:pointer}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(7,89,133,.16)}
+.pcard.linked:hover h4{color:var(--sea-500)}
+.pcard .go{font-size:11px;color:var(--sea-500);font-weight:700;opacity:0;transition:.2s}
+.pcard.linked:hover .go{opacity:1}
+.map-flash{animation:mapflash 1.2s ease}
+@keyframes mapflash{0%{box-shadow:0 0 0 4px var(--sea-300)}100%{box-shadow:var(--shadow)}}
+
+/* ---------- day tabs + timeline ---------- */
+.tabs{display:flex;gap:10px;margin-bottom:24px}
+.tab{flex:1;border:none;font-family:inherit;cursor:pointer;border-radius:14px;padding:13px 10px;font-size:15px;font-weight:800;background:#fff;color:var(--sub);box-shadow:var(--shadow);transition:.18s;border:2px solid transparent}
+.tab.on.t1{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff}
+.tab.on.t2{background:linear-gradient(135deg,#fb923c,#f97316);color:#fff}
+.tab small{display:block;font-weight:600;font-size:12px;opacity:.8}
+.daypane{display:none}.daypane.on{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.day-theme{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:14px 18px;margin-bottom:22px;font-size:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.day-theme .pill{font-size:12px;font-weight:800;color:#fff;background:var(--sea-500);padding:3px 11px;border-radius:99px}
+#pane2 .day-theme .pill{background:var(--sun)}
+
+.tl{position:relative;padding-left:86px}
+.tl::before{content:"";position:absolute;left:64px;top:8px;bottom:8px;width:3px;border-radius:3px;background:linear-gradient(var(--sea-300),var(--sea-500))}
+#pane2 .tl::before{background:linear-gradient(#fdba74,var(--sun))}
+.ti{position:relative;margin-bottom:16px}
+.ti::before{content:"";position:absolute;left:-27.5px;top:20px;width:13px;height:13px;border-radius:50%;background:#fff;border:3.5px solid var(--sea-500);box-shadow:0 0 0 4px var(--sea-100)}
+#pane2 .ti::before{border-color:var(--sun);box-shadow:0 0 0 4px var(--sun-soft)}
+.ti .time{position:absolute;left:-86px;top:16px;width:52px;text-align:right;font-size:12.5px;font-weight:800;color:var(--sea-700);line-height:1.3}
+#pane2 .ti .time{color:#c2410c}
+.ti .card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px}
+.ti h4{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ti .memo{font-size:13.5px;color:var(--sub);margin-top:6px}
+.ti .memo b{color:var(--ink)}
+.badge{font-size:11px;font-weight:800;padding:2px 9px;border-radius:99px}
+.p1{background:var(--coral-soft);color:var(--coral)}
+.p2{background:#eef2f7;color:#64748b}
+.must{background:var(--sand);color:#92400e}
+@media(max-width:560px){
+  .tl{padding-left:0}
+  .tl::before{left:6px}
+  .ti::before{left:.5px;top:18px}
+  .ti .time{position:static;width:auto;text-align:left;display:block;margin:0 0 4px 24px}
+  .ti .card{margin-left:24px}
+}
+.cutbox{margin-top:20px;background:#fff;border-left:5px solid var(--coral);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 20px;font-size:14px}
+.cutbox b{color:var(--coral)}
+.cutbox ol{margin:8px 0 0 20px}
+.night{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+@media(max-width:560px){.night{grid-template-columns:1fr}}
+.night div{background:var(--sea-50);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px}
+.night b{display:block;font-size:13.5px;margin-bottom:2px}
+
+/* ---------- places ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.pcard{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;transition:.15s}
+.pcard.hide{display:none}
+.pcard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pcard h4{font-size:15px;font-weight:800}
+.pcard .meta{font-size:12.5px;color:var(--sub);margin-top:4px}
+.rg{font-size:11px;font-weight:700;color:var(--sea-700);background:var(--sea-100);padding:2px 9px;border-radius:99px;white-space:nowrap}
+
+/* ---------- transit ---------- */
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);font-size:13.5px}
+th{background:var(--sea-700);color:#fff;text-align:left;padding:10px 14px;font-size:12.5px;font-weight:700}
+td{padding:10px 14px;border-top:1px solid var(--sea-50)}
+td b{color:var(--sea-700)}
+
+/* ---------- checklist ---------- */
+.check{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:8px 6px}
+.ck{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;cursor:pointer;transition:.15s;font-size:14.5px;font-weight:500}
+.ck:hover{background:var(--sea-50)}
+.ck input{width:20px;height:20px;accent-color:var(--sea-500);cursor:pointer;flex-shrink:0}
+.ck.done span{text-decoration:line-through;color:#9db6c4}
+.ck-bar{height:8px;background:var(--sea-100);border-radius:99px;margin:0 0 14px;overflow:hidden}
+.ck-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--sea-300),var(--sea-500));transition:.3s}
+.ck-count{font-size:13px;color:var(--sub);margin-bottom:8px}
+
+/* ---------- rules / notes ---------- */
+.note-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.note-grid{grid-template-columns:1fr}}
+.note{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:18px 20px;font-size:13.5px}
+.note h4{font-size:15px;font-weight:800;margin-bottom:8px;display:flex;gap:7px;align-items:center}
+.note ul{margin-left:18px;color:var(--sub)}
+.note li{margin:4px 0}
+.note li b{color:var(--ink)}
+
+/* ---------- footer ---------- */
+footer{margin-top:64px;background:linear-gradient(175deg,#075985,#053a5f);color:#bfe3f7;text-align:center;padding:44px 18px 40px;font-size:13.5px}
+footer a{color:var(--sea-300);font-weight:700;text-decoration:none}
+footer .em{font-size:24px;margin-bottom:8px;display:block}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="logo">🌊 부산 1박2일</span>
+    <a href="#summary">요약</a><a href="#map-sec">지도</a><a href="#days">일정</a><a href="#places">장소</a><a href="#move">이동</a><a href="#check">체크</a><a href="#info">숙소·팁</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero wrap">
+    <span class="sun">☀️</span>
+    <h1>부산 <em>1박 2일</em></h1>
+    <p class="tag">남포·영도의 골목부터 광안리 밤바다, 해운대 디저트까지</p>
+    <div class="chips">
+      <span class="chip">📅 <b>7/21(화) – 7/22(수)</b></span>
+      <span class="chip">👥 4인</span>
+      <span class="chip">🚉 도착 <b>10:00</b> · 집결 <b>18:00</b></span>
+      <span class="chip">🏠 광안리 Airbnb</span>
+    </div>
+  </div>
+  <div class="waves"><svg viewBox="0 0 1440 64" preserveAspectRatio="none"><path d="M0,32 C240,64 420,0 720,24 C1020,48 1200,8 1440,36 L1440,64 L0,64 Z" fill="#f0f9ff"/></svg></div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ 요약 ============ -->
+<section id="summary">
+  <div class="sec-head"><span class="no">01</span><h2>한눈에 보기</h2></div>
+  <p class="sec-sub">확정: 숙소 + 왕복 열차(10:00 도착 / 18:00 집결). 나머지는 P1 우선, P2는 시간·체력 되면.</p>
+  <div class="day-cards">
+    <div class="dcard">
+      <div class="dt">DAY 1 · 7/21 화</div>
+      <h3>깡통 → 영도(맑으면) → 광안 🌅</h3>
+      <div class="flow">
+        <span>역·락커</span><i>›</i><span>깡통시장</span><i>›</i><span>이재모 점심</span><i>›</i><span>말랑이 투어</span><i>›</i><span>☀️ 흰여울·카페</span><i>›</i><span>체크인</span><i>›</i><span>저녁</span><i>›</i><span>바다·불꽃놀이 🎆</span>
+      </div>
+    </div>
+    <div class="dcard d2">
+      <div class="dt">DAY 2 · 7/22 수</div>
+      <h3>해장 → 카페 → 귀경 🚉</h3>
+      <div class="flow">
+        <span>~11:00 아웃</span><i>›</i><span>해장 (밀면/국밥/곰탕)</span><i>›</i><span>근처 카페</span><i>›</i><span>18:00 부산역</span>
+      </div>
+    </div>
+  </div>
+  <div class="fixed-note">📌 <b>확정은 숙소 + 왕복 열차뿐</b> — 맛집·카페는 후보 중 당일 컨디션·웨이팅 보고 선택 &nbsp;|&nbsp; ☔ <b>흰여울은 비 안 오면</b> &nbsp;|&nbsp; ⏰ <b>18:00 부산역</b> 하드 데드라인</div>
+</section>
+
+<!-- ============ 지도 ============ -->
+<section id="map-sec">
+  <div class="sec-head"><span class="no">02</span><h2>지도</h2></div>
+  <p class="sec-sub">버튼으로 Day별 동선 전환 · 마커를 탭하면 상세 정보</p>
+  <div class="map-btns">
+    <button class="mbtn on" data-f="all">전체</button>
+    <button class="mbtn" data-f="1">Day 1 축</button>
+    <button class="mbtn" data-f="2">Day 2 축</button>
+    <button class="mbtn" data-f="stay">숙소</button>
+  </div>
+  <div id="map"></div>
+  <p class="map-note">※ 마커 위치는 대략적인 값 — 방문 직전 지도 앱으로 정확한 위치·영업시간 재확인.</p>
+</section>
+
+<!-- ============ 일정 ============ -->
+<section id="days">
+  <div class="sec-head"><span class="no">03</span><h2>상세 일정</h2></div>
+  <div class="tabs">
+    <button class="tab t1 on" data-p="1">Day 1 · 화<small>깡통 → 영도 → 광안</small></button>
+    <button class="tab t2" data-p="2">Day 2 · 수<small>해장 → 카페 → 역</small></button>
+  </div>
+
+  <!-- Day 1 -->
+  <div class="daypane on" id="pane1">
+    <div class="day-theme"><span class="pill">테마</span> 깡통·남포 → (맑으면) 영도 → 광안 정착 · 밤바다 🎆 <span class="pill">짐</span> 부산역 코인락커 → 오후에 찾아 광안행</div>
+    <div class="tl">
+      <div class="ti"><div class="time">10:00</div><div class="card">
+        <h4>🚉 부산역 도착 · 캐리어 락커</h4>
+        <p class="memo">손만 가볍게 남포·깡통으로. 오후에 <b>짐 찾아 광안</b> 이동.</p>
+      </div></div>
+      <div class="ti"><div class="time">10:30~</div><div class="card">
+        <h4>🛒 깡통시장 · 국제시장 구경</h4>
+        <p class="memo">골목 구경하며 워밍업. 지나는 길에 <b>이재모 캐치테이블 현장 등록</b>해두면 점심 웨이팅 단축.</p>
+      </div></div>
+      <div class="ti"><div class="time">12:00~</div><div class="card">
+        <h4>🍕 점심 · 이재모피자 본점 (광복) <span class="badge p1">P1</span></h4>
+        <p class="memo">웨이팅 길면 폴백: <b>광복 2호점 · 테이크아웃 · 부산역점</b>. (일요 휴무 → 화요일 OK)</p>
+      </div></div>
+      <div class="ti"><div class="time">13:30~</div><div class="card">
+        <h4>🧸 말랑이 투어 <span class="badge p1">P1</span></h4>
+        <p class="memo"><b>범영상사 · 재미완구</b> 두 집 위주. 예산·캐리어 무게 관리.</p>
+      </div></div>
+      <div class="ti"><div class="time">오후</div><div class="card">
+        <h4>🌦️ 날씨 분기</h4>
+        <div class="night">
+          <div><b>☀️ 비 안 오면 → 영도</b>흰여울문화마을 산책 + 카페(에테르). 남포→영도 택시 15–25분. 언덕·더위 — 물 필수.</div>
+          <div><b>☔ 비 오면 → 스킵</b>영도 생략하고 일찍 짐 찾아 광안으로. 숙소에서 여유 or 실내 카페.</div>
+        </div>
+      </div></div>
+      <div class="ti"><div class="time">16:00~</div><div class="card">
+        <h4>🏠 부산역 짐 수령 → 숙소 이동 · 체크인</h4>
+        <p class="memo">짐 들고 이동은 <b>택시가 정신건강</b> (25–35분). 체크인 16:00~ · 샤워·짐 풀고 휴식.</p>
+      </div></div>
+      <div class="ti"><div class="time">저녁</div><div class="card">
+        <h4>🍽️ 쉬다가 저녁 (미정)</h4>
+        <p class="memo">광안 후보: <b>언양불고기 거리 · 톤쇼우 광안</b> 등 — 당일 컨디션·웨이팅 보고 픽.<br>디저트 위시: <b>김모찌(망고모찌) · 앙시앙</b> — 조기마감 주의, 저녁 전 선점도 OK.</p>
+      </div></div>
+      <div class="ti"><div class="time">밤</div><div class="card">
+        <h4>🎆 광안리 바다구경 & 불꽃놀이</h4>
+        <p class="memo">숙소에서 해변 도보 2분. 광안대교 야경 보며 마무리.<br>불꽃놀이는 <b>해변 허용 구역·시간 확인</b> 후. 끝나면 귀가 — <b>22시 이후 숙소 정숙</b>.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="daypane" id="pane2">
+    <div class="day-theme"><span class="pill">테마</span> 여유롭게 — 해장 → 근처 카페 → 귀경 <span class="pill">데드라인</span> 체크아웃 <b>11:00</b> · <b>18:00 부산역</b></div>
+    <div class="tl">
+      <div class="ti"><div class="time">09:00<br>–11:00</div><div class="card">
+        <h4>🧳 패킹 · 체크아웃</h4>
+        <p class="memo"><b>11:00 전 필수</b> (레이트 사실상 불가). 캐리어는 역 락커 or 호스트 짐보관 활용.</p>
+      </div></div>
+      <div class="ti"><div class="time">점심</div><div class="card">
+        <h4>🍲 해장 — 셋 중 하나 <span class="badge p1">택1</span></h4>
+        <div class="night">
+          <div><b>🍜 밀면</b>시원하게. 서면·부산역 쪽 이동 동선에 끼우기 좋음.</div>
+          <div><b>🍲 본전돼지국밥</b>부산역 바로 앞 — 귀경 동선 최적.</div>
+          <div><b>🥣 거대곰탕</b>해운대 쪽. 여기로 가면 오후를 해운대에서.</div>
+        </div>
+        <p class="memo" style="margin-top:8px">어디서 해장하느냐가 <b>오후 카페 위치</b>를 정함 — 당일 컨디션으로 결정.</p>
+      </div></div>
+      <div class="ti"><div class="time">오후</div><div class="card">
+        <h4>☕ 근처 카페</h4>
+        <p class="memo">해장한 동네 기준으로: 서면이면 <b>오루</b>, 해운대면 <b>포에타(에그타르트)·모모스</b>, 광안 근처면 <b>앙시앙</b>.<br>시간·체력 남으면 서면 말랑이(디자인 스퀘어·버터치즈) <span class="badge p2">P2</span> 잠깐.</p>
+      </div></div>
+      <div class="ti"><div class="time">~18:00</div><div class="card">
+        <h4>🚉 부산역 이동 · 집결 <span class="badge p1">18:00 고정</span></h4>
+        <p class="memo">해운대에서 출발이면 <b>35–40분 여유(17:20 전 출발)</b> · 서면이면 1호선 약 10분.<br>락커 짐 수령 후 귀경 열차.</p>
+      </div></div>
+    </div>
+    <div class="cutbox">
+      <b>⚡ 원칙</b>
+      <p style="margin-top:6px">Day2는 욕심내지 않기 — <b>해장 + 카페 한 곳</b>이 기본. 나머지 위시(서면 말랑이·해운대 디저트)는 시간 남을 때만.<br>고정: <b>체크아웃 11:00 + 18:00 부산역</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 장소 ============ -->
+<section id="places">
+  <div class="sec-head"><span class="no">04</span><h2>장소 마스터</h2></div>
+  <p class="sec-sub">필터로 권역·우선순위별 확인</p>
+  <div class="filters">
+    <button class="mbtn on" data-pf="all">전체</button>
+    <button class="mbtn" data-pf="P1">P1만</button>
+    <button class="mbtn" data-pf="남포·깡통">남포·깡통</button>
+    <button class="mbtn" data-pf="영도">영도</button>
+    <button class="mbtn" data-pf="광안">광안</button>
+    <button class="mbtn" data-pf="서면">서면</button>
+    <button class="mbtn" data-pf="해운대">해운대</button>
+  </div>
+  <div class="pgrid" id="pgrid"></div>
+</section>
+
+<!-- ============ 이동 ============ -->
+<section id="move">
+  <div class="sec-head"><span class="no">05</span><h2>이동 감</h2></div>
+  <p class="sec-sub">짐 있을 때 · 야간 · 4인이면 택시 1대 우선. 숙소 주차 불가.</p>
+  <table>
+    <tr><th>구간</th><th>대략</th></tr>
+    <tr><td>부산역 ↔ 광안리 숙소</td><td>택시 25–35분 / 지하철 40–50분(환승)</td></tr>
+    <tr><td>남포 ↔ 영도(흰여울)</td><td>택시 15–25분</td></tr>
+    <tr><td>광안리 ↔ 남포</td><td>택시 25–35분 / 지하철 35–45분</td></tr>
+    <tr><td>서면 ↔ 해운대</td><td>지하철 약 20–30분</td></tr>
+    <tr><td>해운대 → 부산역</td><td><b>35–40분 여유</b> 잡고 출발</td></tr>
+    <tr><td>서면 → 부산역</td><td>1호선 약 10분</td></tr>
+  </table>
+</section>
+
+<!-- ============ 체크리스트 ============ -->
+<section id="check">
+  <div class="sec-head"><span class="no">06</span><h2>출발 전 체크리스트</h2></div>
+  <p class="sec-sub">체크 상태는 이 브라우저에 저장돼요.</p>
+  <p class="ck-count"><span id="ckN">0</span> / <span id="ckT">0</span> 완료</p>
+  <div class="ck-bar"><i id="ckBar"></i></div>
+  <div class="check" id="checklist"></div>
+</section>
+
+<!-- ============ 숙소·팁 ============ -->
+<section id="info">
+  <div class="sec-head"><span class="no">07</span><h2>숙소 · 팁</h2></div>
+  <div class="note-grid">
+    <div class="note">
+      <h4>🏠 숙소 규칙 (광안리 Airbnb)</h4>
+      <ul>
+        <li>체크인 <b>16:00~</b> · 체크아웃 <b>~11:00</b></li>
+        <li>금련산역 도보 5분 · 해변 도보 2분</li>
+        <li>짐 보관 가능 → <b>사전 호스트 문의</b></li>
+        <li>고기·생선 실내 조리 금지 · 침구 위 취식 금지</li>
+        <li>22시 이후 정숙 · 흡연 패널티 · 주차 불가</li>
+        <li><a href="https://www.airbnb.co.kr/rooms/1508346546708562031" target="_blank" style="color:var(--sea-500)">Airbnb 링크 ↗</a></li>
+      </ul>
+    </div>
+    <div class="note">
+      <h4>🍕 이재모피자 웨이팅 메모</h4>
+      <ul>
+        <li>본점 웨이팅 상시 — 캐치테이블 <b>현장 등록</b></li>
+        <li>오픈 10:00 · L.O. 약 20:30 · <b>일요 휴무</b></li>
+        <li>저녁은 긴 웨이팅·조기 마감 실패 사례 多 → <b>Day1 오전 배치</b>로 리스크 컷</li>
+        <li>폴백: 광복 2호점 / 테이크아웃 / 부산역점 / 서면점</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h4>🍽️ 식사 슬롯</h4>
+      <ul>
+        <li>D1 점심 <b>이재모피자</b> · 저녁 <b>미정</b> (광안 후보: 언양불고기 등)</li>
+        <li>D1 디저트 위시: 김모찌(망고) · 앙시앙 — 조기마감 주의</li>
+        <li>D2 해장 <b>밀면 / 본전국밥 / 거대곰탕 택1</b> → 근처 카페</li>
+        <li>해장 위치가 오후 동선(서면/해운대/광안) 결정 🔀</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h4>⚠️ 주의</h4>
+      <ul>
+        <li>김모찌·인기 빵집 <b>재료 소진 조기마감</b> 흔함</li>
+        <li>7월 더위 — 영도 언덕 물·모자 필수</li>
+        <li>영업시간·휴무는 방문 직전 지도 앱 재확인</li>
+        <li>귀경 열차 18:00 이후인지 재확인</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span class="em">🌊🍕🧸🍮</span>
+  부산 1박2일 · 7/21–22 · 4인<br>
+  <a href="https://www.airbnb.co.kr/rooms/1508346546708562031" target="_blank">숙소 Airbnb</a> · 영업시간·웨이팅은 방문 직전 재확인
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ================= 지도 ================= */
+const SPOTS=[
+ {n:"부산역 (락커)",lat:35.1151,lng:129.0403,day:"12",t:"거점",d:"D1 10:00 도착 · D2 18:00 집결"},
+ {n:"이재모피자 본점",lat:35.0989,lng:129.0306,day:"1",t:"밥 · P1",d:"D1 오전 공략 · 캐치테이블 현장"},
+ {n:"깡통시장 (범영상사·재미완구)",lat:35.1017,lng:129.0266,day:"1",t:"말랑이 · P1",d:"D1 낮 · 야시장은 밤 P2"},
+ {n:"흰여울문화마을",lat:35.0777,lng:129.0454,day:"1",t:"뷰 · P1",d:"D1 오후 · 언덕·더위 대비"},
+ {n:"에테르",lat:35.0786,lng:129.0448,day:"1",t:"카페 · P1",d:"흰여울에서 쉬어가기"},
+ {n:"광안리 Airbnb",lat:35.1508,lng:129.1113,day:"stay",t:"숙소",d:"체크인 16:00~ / 아웃 ~11:00"},
+ {n:"언양불고기 거리",lat:35.1497,lng:129.1118,day:"1",t:"밥 · P1",d:"D1 저녁 · 숙소 도보권"},
+ {n:"김모찌",lat:35.1528,lng:129.1123,day:"1",t:"디저트 MUST",d:"망고모찌 · 조기마감 주의"},
+ {n:"앙시앙",lat:35.1482,lng:129.1076,day:"1",t:"디저트 MUST",d:"크레페·빵 · 광안 축 도보"},
+ {n:"본전돼지국밥",lat:35.1163,lng:129.0398,day:"2",t:"해장 · P1",d:"D2 낮 · 부산역 인근"},
+ {n:"서면 (디자인스퀘어·버터치즈·오루)",lat:35.1580,lng:129.0594,day:"2",t:"말랑이·카페 · P1",d:"D2 오후 · 굿즈 밀집"},
+ {n:"포에타",lat:35.1620,lng:129.1601,day:"2",t:"디저트 MUST",d:"에그타르트"},
+ {n:"모모스 커피",lat:35.1565,lng:129.1452,day:"2",t:"카페 · P1",d:"지점 위치 확인"},
+ {n:"거대곰탕",lat:35.1631,lng:129.1586,day:"2",t:"밥 · P2",d:"시간 되면 한 끼"}
+];
+const map=L.map('map',{scrollWheelZoom:false}).setView([35.128,129.09],12);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
+const C={1:"#0ea5e9",2:"#f97316",stay:"#8b5cf6","12":"#075985"};
+function pin(c){return L.divIcon({className:"",html:`<div class="mk" style="width:22px;height:22px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);background:${c};border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,iconSize:[22,22],iconAnchor:[11,20]})}
+const markers=SPOTS.map(s=>{
+  const m=L.marker([s.lat,s.lng],{icon:pin(C[s.day])})
+    .bindPopup(`<b>${s.n}</b><br><span class="pop-tag">${s.t}</span><br>${s.d}`)
+    .bindTooltip(`<b>${s.n}</b><br>${s.t}<br>${s.d}`,{direction:"top",offset:[0,-20],className:"spot-tip",opacity:1});
+  m._day=s.day; m.addTo(map); return m;
+});
+/* 지역(권역) 단위 동선 — 개별 가게 아닌 큰 축만 */
+const RG={역:[35.1151,129.0403],남포:[35.1005,129.0285],영도:[35.0780,129.0450],광안:[35.1508,129.1113],서면:[35.1580,129.0594],해운대:[35.1600,129.1580]};
+const R1=["역","남포","영도","역","광안"];  // Day1: 역→깡통·남포→영도(맑으면)→(짐)역→광안
+function rgName(k){return k==="역"?"부산역":k==="남포"?"남포·깡통":k}
+function rgDot(k,color,label,g){
+  L.circleMarker(RG[k],{radius:9,color:"#fff",weight:2.5,fillColor:color,fillOpacity:1})
+    .bindTooltip(label||rgName(k),{permanent:true,direction:"right",offset:[10,0],className:"spot-tip"}).addTo(g);
+}
+function regionRoute(order,color){
+  const g=L.layerGroup();
+  L.polyline(order.map(k=>RG[k]),{color,weight:4,opacity:.55,dashArray:"8 10"}).addTo(g);
+  [...new Set(order)].forEach(k=>rgDot(k,color,null,g));
+  return g;
+}
+const route1=regionRoute(R1,"#0ea5e9");
+/* Day2: 광안→역 기본 + 해장 위치 따라 서면/해운대 경유 옵션 */
+const route2=L.layerGroup();
+L.polyline([RG.광안,RG.역],{color:"#f97316",weight:4,opacity:.6,dashArray:"8 10"}).addTo(route2);
+L.polyline([RG.광안,RG.서면,RG.역],{color:"#f97316",weight:3,opacity:.25,dashArray:"3 8"}).addTo(route2);
+L.polyline([RG.광안,RG.해운대,RG.역],{color:"#f97316",weight:3,opacity:.25,dashArray:"3 8"}).addTo(route2);
+rgDot("광안","#f97316",null,route2);rgDot("역","#f97316",null,route2);
+rgDot("서면","#fdba74","서면 (옵션)",route2);rgDot("해운대","#fdba74","해운대 (옵션)",route2);
+function applyFilter(f){
+  markers.forEach(m=>{
+    const show=f==="all"||m._day===f||(f!=="stay"&&m._day==="12")||(f==="stay"&&m._day==="stay");
+    show?m.addTo(map):map.removeLayer(m);
+  });
+  map.removeLayer(route1);map.removeLayer(route2);
+  if(f==="1")route1.addTo(map);
+  if(f==="2")route2.addTo(map);
+  const vis=SPOTS.filter((s,i)=>map.hasLayer(markers[i]));
+  if(vis.length)map.fitBounds(vis.map(s=>[s.lat,s.lng]),{padding:[36,36]});
+}
+document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("[data-f]").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");applyFilter(b.dataset.f);
+});
+
+/* ================= Day 탭 ================= */
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".daypane").forEach(x=>x.classList.remove("on"));
+  t.classList.add("on");
+  document.getElementById("pane"+t.dataset.p).classList.add("on");
+});
+
+/* ================= 장소 카드 ================= */
+const PLACES=[
+ ["남포·깡통","이재모피자 본점","밥","D1 오전","P1"],
+ ["남포·깡통","범영상사 · 재미완구","말랑이","D1 낮","P1"],
+ ["남포·깡통","깡통야시장 (밤)","야식","D1 밤","P2"],
+ ["영도","흰여울문화마을","산책·뷰","D1 오후","P1"],
+ ["영도","에테르","카페","D1 오후","P1"],
+ ["광안","Airbnb 숙소","숙소","16:00 / 11:00","P1"],
+ ["광안","언양불고기 거리","밥","D1 저녁","P1"],
+ ["광안","김모찌 (망고모찌)","디저트","D1 저녁","P1"],
+ ["광안","앙시앙","디저트·빵","D1 저녁","P1"],
+ ["광안","톤쇼우 광안","밥","—","P2"],
+ ["부산역","본전돼지국밥","해장","D2 낮","P1"],
+ ["서면","디자인 스퀘어","말랑이","D2 오후","P1"],
+ ["서면","버터치즈 피규어 빌리지","말랑이","D2 오후","P1"],
+ ["서면","오루","카페","D2 오후","P1"],
+ ["서면","바오하우스","밥","D2","P2"],
+ ["서면","밀면","면","D2","P2"],
+ ["해운대","포에타","에그타르트","D2 오후","P1"],
+ ["해운대","모모스 커피","카페","D2 오후","P1"],
+ ["해운대","거대곰탕","밥","D2","P2"],
+ ["해운대","톤쇼우","밥","스킵 권장","P2"]
+];
+/* 장소명 → 지도 마커 매핑 (부분 일치) */
+const SPOT_KEY={"이재모피자":"이재모","범영상사":"깡통시장","깡통야시장":"깡통시장","흰여울":"흰여울","에테르":"에테르","Airbnb":"Airbnb","언양불고기":"언양불고기","김모찌":"김모찌","앙시앙":"앙시앙","본전":"본전","디자인 스퀘어":"서면","버터치즈":"서면","오루":"서면","바오하우스":"서면","밀면":"서면","포에타":"포에타","모모스":"모모스","거대곰탕":"거대곰탕"};
+function findMarker(name){
+  for(const k in SPOT_KEY){ if(name.includes(k)){
+    const i=SPOTS.findIndex(s=>s.n.includes(SPOT_KEY[k]));
+    if(i>-1)return markers[i];
+  }}
+  return null;
+}
+const pg=document.getElementById("pgrid");
+pg.innerHTML=PLACES.map(p=>{
+  const linked=!!findMarker(p[1]);
+  return `<div class="pcard reveal ${linked?"linked":""}" data-r="${p[0]}" data-pr="${p[4]}" data-n="${p[1]}">
+  <div class="top"><h4>${p[1]}</h4><span class="badge ${p[4]==="P1"?"p1":"p2"}">${p[4]}</span></div>
+  <p class="meta"><span class="rg">${p[0]}</span> &nbsp;${p[2]} · ${p[3]}</p>
+  ${linked?'<p class="go">📍 지도에서 보기</p>':""}</div>`;}).join("");
+pg.addEventListener("click",e=>{
+  const c=e.target.closest(".pcard.linked");if(!c)return;
+  const m=findMarker(c.dataset.n);if(!m)return;
+  document.querySelector('[data-f="all"]').click();
+  document.getElementById("map").scrollIntoView({behavior:"smooth",block:"center"});
+  const el=document.getElementById("map");
+  el.classList.remove("map-flash");void el.offsetWidth;el.classList.add("map-flash");
+  setTimeout(()=>{map.flyTo(m.getLatLng(),15,{duration:.9});setTimeout(()=>m.openPopup(),950)},450);
+});
+document.querySelectorAll("[data-pf]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("[data-pf]").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");const f=b.dataset.pf;
+  document.querySelectorAll(".pcard").forEach(c=>{
+    const ok=f==="all"||c.dataset.r===f||(f==="P1"&&c.dataset.pr==="P1");
+    c.classList.toggle("hide",!ok);
+  });
+});
+
+/* ================= 체크리스트 ================= */
+const CKS=[
+ "숙소 Airbnb 메시지 (짐보관 여부 문의)",
+ "Day1 부산역 락커 계획 (여유 칸 확인)",
+ "이재모 본점/분점 폴백 합의",
+ "범영·재미 · 서면 말랑이 예산 정하기",
+ "김모찌 망고 · 포에타 에타 · 앙시앙 동선 확인",
+ "불꽃놀이 준비물 · 해변 허용 구역/시간 확인",
+ "Day1 오후 날씨 확인 (영도 갈지 말지)",
+ "Day2 11:00 체크아웃 · 18:00 부산역 알람",
+ "해운대에서 귀경 시 17:20 전 출발 알람",
+ "귀경 열차 18:00 이후인지 재확인",
+ "칫솔·클렌징·충전기 (숙소 미비 가능)"
+];
+const KEY="busan-1n2d-check";
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+const cl=document.getElementById("checklist");
+cl.innerHTML=CKS.map((c,i)=>`<label class="ck ${saved[i]?"done":""}"><input type="checkbox" data-i="${i}" ${saved[i]?"checked":""}><span>${c}</span></label>`).join("");
+function ckUpdate(){
+  const n=Object.values(saved).filter(Boolean).length;
+  const bar=document.getElementById("ckBar");
+  bar.style.width=(n/CKS.length*100)+"%";
+  const done=n===CKS.length;
+  bar.style.background=done?"linear-gradient(90deg,#34d399,#10b981)":"";
+  document.querySelector(".ck-count").innerHTML=done
+    ?`🎉 <b>준비 완료!</b> 부산으로 출발 🌊`
+    :`<b>${n}</b> / ${CKS.length} 완료`;
+}
+cl.addEventListener("change",e=>{
+  const i=e.target.dataset.i;saved[i]=e.target.checked;
+  e.target.closest(".ck").classList.toggle("done",e.target.checked);
+  try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(err){}
+  ckUpdate();
+});
+ckUpdate();
+
+/* ================= scroll reveal ================= */
+document.querySelectorAll(".ti,.dcard,.note,.fixed-note,.cutbox").forEach(el=>el.classList.add("reveal"));
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}
+}),{threshold:.08});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+/* 탭 전환 시 새로 보이는 pane 요소도 reveal */
+new MutationObserver(()=>{document.querySelectorAll(".daypane.on .reveal:not(.in)").forEach(el=>io.observe(el))})
+  .observe(document.getElementById("days"),{subtree:true,attributes:true,attributeFilter:["class"]});
+
+/* ================= nav highlight ================= */
+const secs=[...document.querySelectorAll("section")];
+const links=[...document.querySelectorAll("nav a")];
+addEventListener("scroll",()=>{
+  let cur=secs.findLast(s=>s.getBoundingClientRect().top<120);
+  links.forEach(a=>a.classList.toggle("on",cur&&a.getAttribute("href")==="#"+cur.id));
+},{passive:true});
+</script>
+</body>
+</html>
